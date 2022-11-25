@@ -1,30 +1,34 @@
-import { FormEvent, useState } from 'react'
-import { Task } from './Task'
+import { FormEvent, useEffect, useState } from 'react'
+import { remult } from 'remult'
+import { Task } from '../shared/Task'
+import { TasksController } from '../shared/TasksController'
+
+const taskRepo = remult.repo(Task)
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: 'Setup', completed: true },
-    { id: 2, title: 'Entities', completed: false },
-    { id: 3, title: 'Paging, Sorting and Filtering', completed: false },
-    { id: 4, title: 'CRUD Operations', completed: false },
-    { id: 5, title: 'Validation', completed: false },
-    { id: 6, title: 'Backend methods', completed: false },
-    { id: 7, title: 'Database', completed: false },
-    { id: 8, title: 'Authentication and Authorization', completed: false },
-    { id: 9, title: 'Deployment', completed: false }
-  ])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
+
+  useEffect(
+    () =>
+      taskRepo
+        .query({
+          where: { completed: undefined }
+        })
+        .subscribe(setTasks),
+    []
+  )
 
   const addTask = async (e: FormEvent) => {
     e.preventDefault()
     try {
       setTasks([
         ...tasks,
-        {
+        await taskRepo.insert({
           title: newTaskTitle,
           completed: false,
           id: tasks.length + 1
-        }
+        })
       ])
       setNewTaskTitle('')
     } catch (error: any) {
@@ -33,7 +37,7 @@ function App() {
   }
 
   const setAllCompleted = async (completed: boolean) => {
-    setTasks(tasks.map((task) => ({ ...task, completed })))
+    await TasksController.setAllCompleted(completed)
   }
 
   return (
@@ -52,11 +56,21 @@ function App() {
 
           const setCompleted = async (completed: boolean) => {
             setTask({ ...task, completed })
+            await taskRepo.save({ ...task, completed })
           }
           const setTitle = (title: string) => {
             setTask({ ...task, title })
           }
+
+          const saveTask = async () => {
+            try {
+              await taskRepo.save(task)
+            } catch (error: any) {
+              alert(error.message)
+            }
+          }
           const deleteTask = async () => {
+            await taskRepo.delete(task)
             setTasks(tasks.filter((t) => t !== task))
           }
           return (
@@ -68,6 +82,7 @@ function App() {
               />
               <input
                 value={task.title}
+                onBlur={saveTask}
                 onChange={(e) => setTitle(e.target.value)}
               />
               <button onClick={deleteTask}>x</button>

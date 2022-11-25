@@ -1,0 +1,47 @@
+[
+  {
+    "id": 2,
+    "title": "Setup",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "title": "Entities",
+    "completed": true
+  },
+  {
+    "id": 4,
+    "title": "Paging, Sorting and Filtering",
+    "completed": true
+  },
+  {
+    "id": 5,
+    "title": "CRUD Operations",
+    "completed": true
+  },
+  {
+    "id": 6,
+    "title": "Validation",
+    "completed": true
+  },
+  {
+    "id": 7,
+    "title": "Backend methods",
+    "completed": true
+  },
+  {
+    "id": 8,
+    "title": "Database",
+    "completed": false
+  },
+  {
+    "id": 9,
+    "title": "Authentication and Authorization",
+    "completed": false
+  },
+  {
+    "id": 10,
+    "title": "Deployment",
+    "completed": false
+  }
+]
